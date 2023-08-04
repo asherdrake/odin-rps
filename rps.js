@@ -13,12 +13,11 @@ let scissors = {
 
 const choices = [rock, paper, scissors]
 
-
 function getComputerChoice() {
     return choices[Math.floor(Math.random() * choices.length)]
 }
 
-function rpsRound(playerSelection, computerSelection) {
+function getWinner(playerSelection, computerSelection) {
     playerSelection = playerSelection.toLowerCase()
 
     if (playerSelection.valueOf() === computerSelection.name) {
@@ -32,28 +31,55 @@ function rpsRound(playerSelection, computerSelection) {
     }
 }
 
-function game() {
-    let scoreYou = 0
-    let scoreComp = 0
-    for (let i = 0; i < 5; i++) {
-        let result = rpsRound(prompt("Please enter your choice:"), getComputerChoice())
-        if (result === 0) {
-            console.log("Tie.")
-            i--
-        } else if (result === -1) {
-            console.log("Computer wins the round.")
-            scoreComp++
-        } else {
-            console.log("You win the round.")
-            scoreYou++
-        }
-    }
-    
-    if (scoreYou > scoreComp) {
-        console.log('You win the game!')
+let scoreUser = 0;
+let scoreComp = 0;
+
+let div = document.querySelector('.result-msg')
+let score = document.querySelector('.score');
+
+function updateScore() {
+    score.textContent = 'User: ' + scoreUser + " - Computer: " + scoreComp;
+}
+
+function processResult(result) {
+    if (result === 0) {
+        div.textContent = "Tie.";
+    } else if (result === -1) {
+        div.textContent = "Computer wins the round.";
+        scoreComp++;
+        updateScore();
     } else {
-        console.log('Computer wins the game.')
+        div.textContent = "You win the round.";
+        scoreUser++;
+        updateScore();
+    }
+
+    if (scoreComp === 5 || scoreUser === 5) {
+        if (scoreUser > scoreComp) {
+            div.textContent = 'You win the game!';
+        } else {
+            div.textContent = 'Computer wins the game.';
+        }
+        scoreUser = 0;
+        scoreComp = 0;
+        updateScore();
     }
 }
 
-game()
+const rockButton = document.querySelector('.rock');
+rockButton.addEventListener('click', function(e) {
+    let result = getWinner('rock', getComputerChoice());
+    processResult(result);
+});
+
+const paperButton = document.querySelector('.paper');
+paperButton.addEventListener('click', function(e) {
+    let result = getWinner('paper', getComputerChoice());
+    processResult(result);
+});
+
+const scissorsButton = document.querySelector('.scissors');
+scissorsButton.addEventListener('click', function(e) {
+    let result = getWinner('scissors', getComputerChoice());
+    processResult(result);
+});
